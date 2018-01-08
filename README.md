@@ -12,6 +12,64 @@ available, etc!
 [hubot]: http://hubot.github.com
 [generator-hubot]: https://github.com/github/generator-hubot
 
+
+## Install
+
+* Install basic packages:
+
+`sudo npm install -g hubot coffee-script yo generator-hubot`
+
+* Create dir and launch yo for the first time
+
+```
+mkdir hubot
+cd hubot/
+yo hubot
+yo hubot
+```
+
+* Install slack support
+
+```
+npm install hubot-slack --save
+```
+
+* Test with shell and with slack
+
+```
+./bin/hubot
+./bin/hubot --adapter slack
+```
+
+* Create heroku app
+
+```
+heroku create crishubot
+heroku config:add HEROKU_URL=https://crishubot.herokuapp.com/ -a crishubot
+heroku config:add HUBOT_SLACK_TOKEN=xxxx -a crishubot
+```
+
+* Push to heroku
+
+```
+git init
+git commit -m 'first commit'
+git remote add heroku https://git.heroku.com/crishubot.git
+```
+
+* Verify that the `Procfile` contains `bin/hubot -a slack`
+
+## Heroku config
+
+* I stopped it by running the following command:
+
+`heroku ps:scale web=0`
+
+It can be started again by running the command:
+
+`heroku ps:scale web=1`
+
+
 ### Running myhubot Locally
 
 You can test your hubot by running the following, however some plugins will not
