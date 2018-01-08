@@ -10,5 +10,6 @@
   "hubot-rules",
   "hubot-shipit",
   "hubot-forecastio",
-  "hubot-crypto"
+  "hubot-crypto",
+  "hubot-seen"
 ]
