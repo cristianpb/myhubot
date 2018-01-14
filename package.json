@@ -14,6 +14,7 @@
     "hubot-help": "^0.2.2",
     "hubot-heroku-keepalive": "^1.0.3",
     "hubot-maps": "0.0.3",
+    "hubot-mongodb-brain": "^0.1.1",
     "hubot-pugme": "^0.1.1",
     "hubot-redis-brain": "0.0.4",
     "hubot-rules": "^0.1.2",
@@ -21,7 +22,8 @@
     "hubot-seen": "^1.0.1",
     "hubot-shell": "^1.0.2",
     "hubot-shipit": "^0.2.1",
-    "hubot-slack": "^4.4.0"
+    "hubot-slack": "^4.4.0",
+    "mongodb": "^2.2.33"
   },
   "engines": {
     "node": "0.10.x"

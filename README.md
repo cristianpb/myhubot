@@ -69,6 +69,13 @@ It can be started again by running the command:
 
 `heroku ps:scale web=1`
 
+## Mongo brain
+
+* Mongodb incompatibility : node.js - db.createCollection is not a function
+
+```
+npm install mongodb@2.2.33 --save
+```
 
 ### Running myhubot Locally
 
