@@ -10,5 +10,6 @@
   "hubot-forecastio",
   "hubot-crypto",
   "hubot-seen",
-  "hubot-mongodb-brain"
+  "hubot-mongodb-brain",
+  "hubot-velib"
 ]
