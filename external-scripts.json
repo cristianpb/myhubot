@@ -11,5 +11,6 @@
   "hubot-crypto",
   "hubot-seen",
   "hubot-mongodb-brain",
-  "hubot-velib"
+  "hubot-velib",
+  "hubot-ratp"
 ]
