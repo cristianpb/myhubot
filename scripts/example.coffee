@@ -10,6 +10,19 @@
 
 module.exports = (robot) ->
 
+
+   robot.hear /Presentateur/i, (res) ->
+     myArray = [
+       'Mikael'
+       'Charlotte'
+       'Eelaman'
+       'Matthieu'
+       'Cristian'
+       'Stanislas'
+     ]
+     rand = myArray[Math.floor(Math.random() * myArray.length)]
+     res.send "J'ai choisi #{rand}"
+
    robot.hear /badger/i, (res) ->
      res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   
