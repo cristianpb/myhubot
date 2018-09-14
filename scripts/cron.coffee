@@ -28,24 +28,31 @@ findPerturbations = (robot, args, value) ->
         described = result.return
         if described['perturbations']
           for perturbation in described['perturbations']
-            if perturbation['level'] != 'info'
-              mymsg = "Ligne #{value}: #{perturbation["text"]}"
-              robot.messageRoom room, mymsg
+            mymsg = "#{perturbation["message"]["text"]}"
+            robot.messageRoom room, mymsg
 
 
 
 module.exports = (robot) ->
   cronJob = require('cron').CronJob
   tz = 'Europe/Paris'
-  pattern = '0 30 8 * * *'
-  new cronJob(pattern, (->
-    do everyMorning
+
+  patternMorning = '0 30 8 * * *'
+  patternNight = '0 55 17 * * *'
+
+  new cronJob(patternMorning, (->
+    do checkPerturbations
   ), null, true, tz)
 
-  everyMorning = ->
-    mymsg = "Good morning. It's 8:30."
-    robot.messageRoom room, mymsg
-    lignes = [['M4', 'Raspail'], ['M6', 'Raspail'], ['RA', 'Chatelet-Les-Halles'], ['RB', 'Denfert Rochereau'], ['M13', 'Gaîté']]
+  new cronJob(patternNight, (->
+    do checkPerturbations
+  ), null, true, tz)
+
+  checkPerturbations = ->
+    mymsg = "This is a cronjob"
+    #robot.messageRoom room, mymsg
+    console.log "#{mymsg}"
+    lignes = [['M2', 'Nation'], ['M4', 'Raspail'], ['M5', 'Bastille'], ['M6', 'Raspail'], ['M7', 'tolbiac'], ['M8', 'Bastille'], ['M13', 'Gaîté'], ['M12', 'Montparnasse Bienvenüe'], ['RA', 'Chatelet-Les-Halles'], ['RB', 'Denfert Rochereau'], ['b28', 'gaite']]
 
     for value in lignes
 

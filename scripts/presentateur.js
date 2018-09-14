@@ -1,5 +1,5 @@
 module.exports = function(robot) {
-  return robot.hear(/test presentateur (.*)/i, function(res) {
+  return robot.hear(/test pres (.*)/i, function(res) {
     let limit = res.match[1]
     let mydict = {
       'Mikael':0,
@@ -9,7 +9,7 @@ module.exports = function(robot) {
       'Cristian':0,
       'Stanislas':0
     }
-    for (let n of fibonacci()) {
+    for (let n of selectPresentateur()) {
       mydict[rand]++;
       // truncate the sequence at 1000
       if (n[0] >= limit) {
@@ -20,13 +20,10 @@ module.exports = function(robot) {
   });
 };
 
-function* fibonacci() { // a generator function
+function* selectPresentateur() { // a generator function
   let prev = 0
   while (true) {
-    myArray = ['Mikael', 'Charlotte', 'Eelaman', 'Matthieu',
-      'Cristian',
-      'Stanislas'
-    ]
+    myArray = ['Mikael', 'Charlotte', 'Eelaman', 'Matthieu', 'Cristian', 'Stanislas' ]
     rand = myArray[Math.floor(Math.random() * myArray.length)]
     prev++;
     yield [ prev, rand ];
