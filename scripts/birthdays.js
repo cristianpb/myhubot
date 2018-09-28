@@ -1,55 +1,66 @@
 
 var cronJob = require('cron').CronJob;
 var moment = require('moment');
+moment.locale('fr');
+var csv = require("fast-csv");
 
 module.exports = function(robot) {
-  var getAmbiguousUserText;
-
-  new cronJob('0 30 17 * * *', function() {
-    console.log("checking today's birthdays...");
-    birthday_list = [
-      {"name": "Eelaman", "date_of_birth": "03/05"}, 
-      {"name": "myhubot", "date_of_birth": "14/09"}, 
-    ]
-    var birthdayUsers = findUsersBornOnDate(moment(), birthday_list);
-    if (birthdayUsers.length === 1) {
-      msg = "<!channel> Today is <@" + birthdayUsers[0].name + ">'s birthday!";
-      msg += "\n" + (quote());
-      return robot.messageRoom("#general", msg);
-    } else if (birthdayUsers.length > 1) {
-      msg = "<!channel> Today is ";
-      for (idx = i = 0, len = birthdayUsers.length; i < len; idx = ++i) {
-        user = birthdayUsers[idx];
-        msg += "<@" + user.name + ">'s" + (idx !== (birthdayUsers.length - 1) ? " and " : "");
-      }
-      msg += " birthday!";
-      msg += "\n" + (quote());
-      //return robot.messageRoom("#general", msg);
-      return res.send(msg);
-    }
+  new cronJob('00 59 11 * * *', function() {
+    ["kerniversaire", "anniversaire"].forEach( celebration => {
+      var msg = "";
+      console.log("checking today's birthdays...");
+      const birthday_list = [];
+      csv
+        .fromPath("scripts/anniversaire.csv")
+        .on("data", function(data){
+          birthday_list.push({
+            "name": data[0].split(";")[0],
+            "anniversaire": data[0].split(";")[1],
+            "kerniversaire": data[0].split(";")[2],
+          });
+        })
+        .on("end", function(){
+          birthday_list.shift();
+          //birthday_list.push({"name": "myhubot", "anniversaire": //"02/10/1989", "kerniversaire": "01/10/2017"})
+          var birthdayUsers = findUsersBornOnDate(moment(), birthday_list, celebration);
+          if (birthdayUsers.length > 0) {
+            for (idx = i = 0, len = birthdayUsers.length; i < len; idx = ++i) {
+              user = birthdayUsers[idx];
+              console.log(celebration);
+              console.log(user);
+              msg += `<!channel> L'${celebration} de <@${user.name.split(" ")[user.name.split(" ").length -1].toLowerCase()}> est dans ${moment.duration(moment().diff(moment(user[celebration], "DD/MM"))).humanize()}`;
+              msg += `\n ${user.name} aura ${user.years} \n`;
+            }
+          }
+          if (msg !== "") {
+            msg += "\n" + (quote()) + "\n";
+            return robot.messageRoom("#general", msg);
+          }
+        })
+    });
   }, null, true, 'Europe/Paris');
-  getAmbiguousUserText = function(users) {
-    var user;
-    return "Be more specific, I know " + users.length + " people named like that: " + (((function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = users.length; i < len; i++) {
-        user = users[i];
-        results.push(user.name);
-      }
-      return results;
-    })()).join(", "));
-  };
 };
 
-function findUsersBornOnDate (date, users) {
-  var k, matches, user;
+function findUsersBornOnDate (date, users, celebration) {
+  var k, matches, user, next_date;
   matches = [];
   for (k in users || {}) {
     user = users[k];
-    if (isValidBirthdate(user.date_of_birth)) {
-      if (equalDates(date, moment(user.date_of_birth, "DD/MM"))) {
-        matches.push(user);
+    next_date = moment(date)
+    if (isValidBirthdate(user[celebration])) {
+      //if (date.format("ddd") == "sam.") {
+      if (date.format("ddd") == "ven.") {
+        [1,1,1].forEach(item => {
+          if (equalDates(next_date.add(item, "days"), moment(user[celebration], "DD/MM/YYYY"))) {
+            user['years'] = moment.duration(next_date.diff(moment(user[celebration], "DD/MM/YYYY"))).humanize();
+            matches.push(user);
+          }
+        })
+      } else if (["lun.", "mar.", "mer.", "jeu."].indexOf(date.format("ddd")) !== -1 ) {
+        if (equalDates(next_date.add(1, "days"), moment(user[celebration], "DD/MM/YYYY"))) {
+          user['years'] = moment.duration(next_date.diff(moment(user[celebration], "DD/MM/YYYY"))).humanize();
+          matches.push(user);
+        }
       }
     }
   }
@@ -58,7 +69,7 @@ function findUsersBornOnDate (date, users) {
 function isValidBirthdate (date) {
   if (date) {
     if (date.length > 0) {
-      if (moment(date, "DD/MM").isValid) {
+      if (moment(date, "DD/MM/YYYY").isValid) {
         return true;
       }
     }
